@@ -3,6 +3,8 @@ package com.oscode.pavlokapp;
 import android.app.ActivityManager;
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 
 import java.util.List;
 
@@ -24,12 +26,17 @@ public class ShockService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
-        // Normally we would do some work here, like download a file.
-        // For our sample, we just sleep for 5 seconds.
+        for (int i=0; i<35; i+=3) {
+            String appname = getApp(i);
+            int ind = appname.indexOf('/');
+            String processName = appname.substring(21,ind);
+            System.out.println(processName);
+        }
+
         long endTime = System.currentTimeMillis() + 100*1000;
         while (System.currentTimeMillis() < endTime) {
             try {
-                Thread.sleep(3000,0);
+                Thread.sleep(5000,0);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -37,12 +44,22 @@ public class ShockService extends IntentService {
                     try {
                         ActivityManager activityManager = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
                         List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
-                        if (procInfos.get(0).processName.equals("com.android.browser")) {
-                            System.out.println("browser running");
+                        String currentProcess = procInfos.get(0).processName;
+                        if (currentProcess.equals("com.android.browser")) {
+
                         }
-                        System.out.println("process running");
                     } catch (Exception e) {}
                 }
         }
+    }
+
+    public String getApp(int i){
+        PackageManager pm=getPackageManager();
+        Intent main=new Intent(Intent.ACTION_MAIN, null);
+
+        main.addCategory(Intent.CATEGORY_LAUNCHER);
+
+        List<ResolveInfo> launchables=pm.queryIntentActivities(main, 0);
+        return launchables.get(i).toString();
     }
 }
