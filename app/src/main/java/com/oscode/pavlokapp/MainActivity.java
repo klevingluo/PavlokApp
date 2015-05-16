@@ -14,7 +14,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         // creates the service
-        Intent intent = new Intent(this, ShockService.class);
+        Intent intent = new Intent("com.phyora.apps.reddit_now,com.rangiworks.transportation.mbta,com.pyxismobile.northeastern_mobile.ui.activity",null,this, ShockService.class);
         startService(intent);
     }
 

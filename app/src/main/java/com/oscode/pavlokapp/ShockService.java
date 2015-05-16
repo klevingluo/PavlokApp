@@ -3,20 +3,26 @@ package com.oscode.pavlokapp;
 import android.app.ActivityManager;
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Created by kluo on 5/16/15.
  */
 public class ShockService extends IntentService {
+
+    List<String> Blacklist;
+
+    ShockService s = this;
+    Shock thread;
+
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      */
     public ShockService() {
-        super("ShockService");
+       super("ShockService");
     }
 
     /**
@@ -26,40 +32,45 @@ public class ShockService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
-        for (int i=0; i<35; i+=3) {
-            String appname = getApp(i);
-            int ind = appname.indexOf('/');
-            String processName = appname.substring(21,ind);
-            System.out.println(processName);
+        if (thread != null) {
+            thread.stop();
+        }
+        Blacklist = new ArrayList<String>();
+
+        StringTokenizer str = new StringTokenizer(intent.getAction(), ",");
+
+        while(str.hasMoreTokens()) {
+            Blacklist.add(str.nextToken());
         }
 
-        long endTime = System.currentTimeMillis() + 100*1000;
-        while (System.currentTimeMillis() < endTime) {
-            try {
-                Thread.sleep(5000,0);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            synchronized (this) {
-                    try {
-                        ActivityManager activityManager = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
-                        List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
-                        String currentProcess = procInfos.get(0).processName;
-                        if (currentProcess.equals("com.android.browser")) {
-
-                        }
-                    } catch (Exception e) {}
-                }
-        }
+        thread = new Shock();
+        thread.run();
     }
 
-    public String getApp(int i){
-        PackageManager pm=getPackageManager();
-        Intent main=new Intent(Intent.ACTION_MAIN, null);
+    private class Shock extends Thread {
 
-        main.addCategory(Intent.CATEGORY_LAUNCHER);
-
-        List<ResolveInfo> launchables=pm.queryIntentActivities(main, 0);
-        return launchables.get(i).toString();
+        public void run() {
+            long endTime = System.currentTimeMillis() + 100*1000;
+            while (System.currentTimeMillis() < endTime) {
+                try {
+                    Thread.sleep(5000,0);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                synchronized (this) {
+                    try {
+                        ActivityManager activityManager = (ActivityManager) s.getSystemService(ACTIVITY_SERVICE);
+                        List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
+                        String currentProcess = procInfos.get(0).processName;
+                        if (Blacklist.contains(currentProcess)) {
+                            Pavlok.getInstance().vibrate(150);
+                            Pavlok.getInstance().led(5);
+                            System.out.println("app detected");
+                        }
+                        System.out.println(currentProcess + " is running");
+                    } catch (Exception e) {}
+                }
+            }
+        }
     }
 }
