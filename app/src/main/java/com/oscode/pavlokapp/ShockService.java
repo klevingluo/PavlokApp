@@ -4,7 +4,7 @@ import android.app.ActivityManager;
 import android.app.IntentService;
 import android.content.Intent;
 
-import java.util.ArrayList;
+import java.lang.Exception;import java.lang.InterruptedException;import java.lang.Override;import java.lang.String;import java.lang.System;import java.lang.Thread;import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -50,10 +50,9 @@ public class ShockService extends IntentService {
     private class Shock extends Thread {
 
         public void run() {
-            long endTime = System.currentTimeMillis() + 100*1000;
-            while (System.currentTimeMillis() < endTime) {
+            while (true) {
                 try {
-                    Thread.sleep(5000,0);
+                    Thread.sleep(10000,0);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -64,6 +63,7 @@ public class ShockService extends IntentService {
                         String currentProcess = procInfos.get(0).processName;
                         if (Blacklist.contains(currentProcess)) {
                             Pavlok.getInstance().vibrate(150);
+                            Pavlok.getInstance().shock(200);
                             Pavlok.getInstance().led(5);
                             System.out.println("app detected");
                         }

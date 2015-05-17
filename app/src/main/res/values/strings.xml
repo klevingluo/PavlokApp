@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">PavlokApp</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">Test</string>
+    <string name="title_section1">SHOKR</string>
+    <string name="title_section2">Shokr</string>
+    <string name="title_section3">Shokr</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
 
 </resources>

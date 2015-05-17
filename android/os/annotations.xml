@@ -1,0 +1,5 @@
+<root>
+    <item name='android.os.Bundle'>
+        <annotation name='java.lang.annotation.Deprecated' />
+    </item>
+</root>

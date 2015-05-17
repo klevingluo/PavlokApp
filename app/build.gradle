@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.oscode.pavlokapp"
+        applicationId "com.oscode.test"
         minSdkVersion 19
         targetSdkVersion 21
         versionCode 1
